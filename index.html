@@ -4,604 +4,1012 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>스터디 플래너</title>
-    
-    <!-- SVG Favicon 추가 -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M21 4H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zm-1 13H7a1 1 0 0 1 0-2h13v2zm0-4H7a1 1 0 0 1 0-2h13v2zm0-4H7a1 1 0 0 1 0-2h13v2z'/%3E%3Cpath d='M3 6v14a2 2 0 0 0 2 2h15v-2H5a1 1 0 0 1-1-1V6H3z'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e8c97a'%3E%3Cpath d='M21 4H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z'/%3E%3C/svg%3E">
 
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        :root {
+            --bg: #0f0e0c;
+            --surface: #1a1916;
+            --surface2: #222018;
+            --border: #2e2b24;
+            --border2: #3a362d;
+            --gold: #e8c97a;
+            --gold-dim: #b89a4e;
+            --gold-glow: rgba(232, 201, 122, 0.15);
+            --text: #f0ead8;
+            --text-muted: #7a7468;
+            --text-dim: #4a4740;
+            --red: #e87a7a;
+            --green: #7ae8a0;
+            --subject-1: #e8c97a; /* 국어 - gold */
+            --subject-2: #7ae8a0; /* 수학 - green */
+            --subject-3: #e87a7a; /* 영어 - red */
+            --subject-4: #c47ae8; /* 사탐 - purple */
+            --subject-5: #7ab8e8; /* 과탐 - blue */
+            --subject-6: #a0a09a; /* 기타 - grey */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Pretendard', sans-serif;
-            background-color: #f4f6f8;
+            font-family: 'Noto Serif KR', serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 32px 16px;
+            display: flex;
+            justify-content: center;
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,201,122,0.06), transparent),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
         }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+        .wrap { max-width: 680px; width: 100%; }
+
+        /* ── HEADER ─────────────────────────────── */
+        .header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            gap: 20px;
         }
-        ::-webkit-scrollbar-track {
-            background: transparent;
+
+        .header-left { flex: 1; }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 28px;
+            color: var(--gold);
+            letter-spacing: 0.01em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
+        .logo-icon {
+            width: 32px; height: 32px;
+            border: 1.5px solid var(--gold-dim);
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            color: var(--gold);
+        }
+
+        .current-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .motto-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 10px;
+            padding: 11px 16px;
+            transition: border-color 0.2s;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        .motto-wrap:focus-within {
+            border-color: var(--gold-dim);
+            box-shadow: 0 0 0 1px var(--gold-dim);
         }
-        .task-checkbox:checked + div {
-            text-decoration: line-through;
-            color: #9ca3af;
+        .motto-quote {
+            color: var(--gold-dim);
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .motto-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 13px;
+            font-family: 'Noto Serif KR', serif;
+            color: var(--text);
+            caret-color: var(--gold);
+        }
+        .motto-input::placeholder { color: var(--text-dim); }
+
+        /* D-Day */
+        .dday-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .dday-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .dday-number {
+            font-family: 'DM Serif Display', serif;
+            font-size: 42px;
+            line-height: 1;
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(232,201,122,0.3);
+        }
+        .dday-number.today { color: var(--red); animation: pulse 1.5s infinite; }
+        .dday-number.past { color: var(--text-muted); }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+        .dday-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.05em;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dday-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+        /* ── DIVIDER ─────────────────────────────── */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border2), transparent);
+            margin: 0 0 32px;
+        }
+
+        /* ── PROGRESS ──────────────────────────── */
+        .progress-section { margin-bottom: 32px; }
+        .progress-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .progress-pct {
+            font-family: 'DM Serif Display', serif;
+            font-size: 24px;
+            color: var(--gold);
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 3px;
+            background: var(--border);
+            border-radius: 99px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+            border-radius: 99px;
+            transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 0 8px rgba(232,201,122,0.5);
+        }
+        .motivation {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ── TASK FORM ─────────────────────────── */
+        .task-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        /* Custom select */
+        .select-wrap { position: relative; flex-shrink: 0; }
+        .select-btn {
+            height: 44px;
+            padding: 0 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: border-color 0.2s;
+            white-space: nowrap;
+        }
+        .select-btn:hover { border-color: var(--border2); }
+        .select-btn .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+        .select-chevron { font-size: 9px; margin-left: 4px; opacity: 0.5; transition: transform 0.2s; }
+        .select-btn.open .select-chevron { transform: rotate(180deg); }
+
+        .select-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            min-width: 130px;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 10px;
+            padding: 6px;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+        .select-menu.open { display: flex; }
+        .select-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 7px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            text-align: left;
+            transition: background 0.15s;
+            width: 100%;
+        }
+        .select-option:hover { background: var(--border); }
+
+        /* Task input */
+        .task-input {
+            flex: 1;
+            height: 44px;
+            padding: 0 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Noto Serif KR', serif;
+            font-size: 13px;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+            caret-color: var(--gold);
+        }
+        .task-input::placeholder { color: var(--text-dim); }
+        .task-input:focus { border-color: var(--gold-dim); }
+
+        .add-btn {
+            height: 44px;
+            padding: 0 20px;
+            background: var(--gold);
+            color: var(--bg);
+            border: none;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+            flex-shrink: 0;
+        }
+        .add-btn:hover { opacity: 0.88; }
+        .add-btn:active { transform: scale(0.97); }
+
+        /* ── TASK LIST ─────────────────────────── */
+        .tasks-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .task-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+
+        .task-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .task-empty {
+            text-align: center;
+            padding: 48px 0;
+            color: var(--text-dim);
+        }
+        .task-empty-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+            opacity: 0.3;
+        }
+        .task-empty p {
+            font-size: 13px;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            transition: border-color 0.2s, opacity 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .task-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+        }
+        .task-item[data-subject="국어"]::before { background: var(--subject-1); }
+        .task-item[data-subject="수학"]::before { background: var(--subject-2); }
+        .task-item[data-subject="영어"]::before { background: var(--subject-3); }
+        .task-item[data-subject="사탐"]::before { background: var(--subject-4); }
+        .task-item[data-subject="과탐"]::before { background: var(--subject-5); }
+        .task-item[data-subject="기타"]::before { background: var(--subject-6); }
+
+        .task-item.done { opacity: 0.45; }
+        .task-item:hover { border-color: var(--border2); }
+
+        /* Custom checkbox */
+        .task-cb-label {
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .task-cb {
+            position: absolute;
+            opacity: 0;
+            width: 0; height: 0;
+        }
+        .task-cb-custom {
+            width: 18px; height: 18px;
+            border: 1.5px solid var(--border2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .task-cb:checked ~ .task-cb-custom {
+            background: var(--gold);
+            border-color: var(--gold);
+        }
+        .task-cb-custom i {
+            font-size: 9px;
+            color: var(--bg);
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+        .task-cb:checked ~ .task-cb-custom i { opacity: 1; }
+
+        .task-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .task-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            padding: 3px 8px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            opacity: 0.85;
+        }
+        .task-badge[data-subject="국어"] { background: rgba(232,201,122,0.15); color: var(--subject-1); }
+        .task-badge[data-subject="수학"] { background: rgba(122,232,160,0.15); color: var(--subject-2); }
+        .task-badge[data-subject="영어"] { background: rgba(232,122,122,0.15); color: var(--subject-3); }
+        .task-badge[data-subject="사탐"] { background: rgba(196,122,232,0.15); color: var(--subject-4); }
+        .task-badge[data-subject="과탐"] { background: rgba(122,184,232,0.15); color: var(--subject-5); }
+        .task-badge[data-subject="기타"] { background: rgba(160,160,154,0.15); color: var(--subject-6); }
+
+        .task-text {
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.2s;
+        }
+        .task-item.done .task-text { text-decoration: line-through; color: var(--text-muted); }
+
+        .task-del {
+            flex-shrink: 0;
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.2s, color 0.2s;
+            padding: 4px;
+        }
+        .task-item:hover .task-del { opacity: 1; }
+        .task-del:hover { color: var(--red); }
+
+        /* ── MODAL ─────────────────────────────── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal-box {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 16px;
+            padding: 28px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+        .modal-overlay.open .modal-box {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 20px;
+            color: var(--text);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.2s;
+        }
+        .modal-close:hover { color: var(--text); }
+
+        .modal-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .modal-date-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text);
+            outline: none;
+            margin-bottom: 20px;
+            transition: border-color 0.2s;
+            color-scheme: dark;
+        }
+        .modal-date-input:focus { border-color: var(--gold-dim); }
+
+        .modal-save {
+            width: 100%;
+            padding: 13px;
+            background: var(--gold);
+            color: var(--bg);
+            border: none;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .modal-save:hover { opacity: 0.88; }
+
+        /* ── FOOTER ─────────────────────────────── */
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 0.06em;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .header { flex-direction: column; gap: 24px; }
+            .dday-card { align-items: flex-start; flex-direction: row; align-items: center; gap: 16px; }
+            .dday-number { font-size: 32px; }
+            .task-form { flex-wrap: wrap; }
+            .select-wrap { width: 100%; }
+            .select-btn { width: 100%; }
+            .add-btn { width: 100%; }
+            .task-input { min-width: 0; }
         }
     </style>
 </head>
-<body class="text-slate-800 antialiased min-h-screen p-4 md:p-8 flex justify-center">
+<body>
+<div class="wrap">
 
-    <div class="max-w-5xl w-full space-y-6">
-        
-        <!-- Header Section -->
-        <header class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex-1">
-                <h1 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-book-open text-indigo-500"></i>
-                    스터디 플래너
-                </h1>
-                <p id="current-date" class="text-slate-500 text-sm mt-1 mb-4"></p>
-                
-                <!-- Motto Area -->
-                <div class="flex items-center gap-2 text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 w-full max-w-2xl">
-                    <i class="fa-solid fa-quote-left text-indigo-300"></i>
-                    <input type="text" id="motto-input" placeholder="나만의 모토나 다짐을 적어보세요!" class="bg-transparent border-none outline-none w-full text-sm font-medium focus:ring-0 placeholder-slate-400">
-                    <i class="fa-solid fa-quote-right text-indigo-300"></i>
-                </div>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                Study Planner
             </div>
-            
-            <!-- D-Day Counter -->
-            <div class="flex items-center gap-3 bg-indigo-50 px-5 py-3 rounded-xl border border-indigo-100">
-                <div class="flex flex-col">
-                    <span class="text-xs text-indigo-500 font-semibold mb-1">시험 D-Day</span>
-                    <div id="d-day-display" class="text-xl font-bold text-indigo-700">D-??</div>
-                </div>
-                <button onclick="openDDayModal()" class="text-indigo-400 hover:text-indigo-600 transition ml-2">
-                    <i class="fa-solid fa-gear"></i>
-                </button>
+            <p class="current-date" id="current-date"></p>
+            <div class="motto-wrap">
+                <i class="fa-solid fa-quote-left motto-quote"></i>
+                <input type="text" id="motto-input" class="motto-input" placeholder="나만의 공부 다짐을 적어보세요">
+                <i class="fa-solid fa-quote-right motto-quote"></i>
             </div>
-        </header>
-
-        <!-- Progress Section -->
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-            <div class="flex justify-between items-end mb-2">
-                <h2 class="text-lg font-bold text-slate-700">오늘의 달성률</h2>
-                <span id="progress-text" class="text-2xl font-black text-indigo-600">0%</span>
-            </div>
-            <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden">
-                <div id="progress-bar" class="bg-indigo-500 h-4 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
-            </div>
-            <p id="motivation-message" class="text-sm text-slate-500 mt-3 text-center">오늘도 힘차게 시작해볼까요? 파이팅! 🔥</p>
-        </section>
-
-        <!-- Main Content -->
-        <div class="space-y-6">
-            
-            <!-- Task List Section -->
-            <section class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 h-full flex flex-col">
-                <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-indigo-400"></i> 오늘의 할 일
-                </h2>
-                
-                <!-- Task Input Form -->
-                <form id="task-form" class="flex gap-2 mb-6">
-                    <!-- Custom Subject Dropdown -->
-                    <div class="relative w-[35%] sm:w-1/4">
-                        <button type="button" id="subject-dropdown-btn" class="w-full flex items-center justify-between px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-sm text-slate-500 h-full">
-                            <span id="subject-dropdown-text" class="truncate">과목 선택</span>
-                            <i class="fa-solid fa-chevron-down text-xs ml-2"></i>
-                        </button>
-                        <div id="subject-dropdown-menu" class="absolute z-10 w-full mt-2 bg-white border border-slate-100 rounded-xl shadow-lg hidden flex-col overflow-hidden py-1">
-                            <button type="button" class="subject-option px-4 py-2.5 text-sm text-left hover:bg-yellow-50 text-yellow-700 transition flex items-center gap-2" data-value="국어">
-                                <span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>국어
-                            </button>
-                            <button type="button" class="subject-option px-4 py-2.5 text-sm text-left hover:bg-green-50 text-green-700 transition flex items-center gap-2" data-value="수학">
-                                <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>수학
-                            </button>
-                            <button type="button" class="subject-option px-4 py-2.5 text-sm text-left hover:bg-orange-50 text-orange-700 transition flex items-center gap-2" data-value="영어">
-                                <span class="w-2.5 h-2.5 rounded-full bg-orange-400"></span>영어
-                            </button>
-                            <button type="button" class="subject-option px-4 py-2.5 text-sm text-left hover:bg-purple-50 text-purple-700 transition flex items-center gap-2" data-value="사탐">
-                                <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>사탐
-                            </button>
-                            <button type="button" class="subject-option px-4 py-2.5 text-sm text-left hover:bg-blue-50 text-blue-700 transition flex items-center gap-2" data-value="과탐">
-                                <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>과탐
-                            </button>
-                            <button type="button" class="subject-option px-4 py-2.5 text-sm text-left hover:bg-slate-50 text-slate-700 transition flex items-center gap-2" data-value="기타">
-                                <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>기타
-                            </button>
-                        </div>
-                        <input type="hidden" id="subject-input">
-                    </div>
-
-                    <input type="text" id="task-input" placeholder="어떤 공부를 할 계획인가요?" class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition text-sm" required>
-                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl transition shadow-sm font-medium whitespace-nowrap">
-                        추가
-                    </button>
-                </form>
-
-                <!-- Task List -->
-                <div class="flex-1 overflow-y-auto pr-2" style="max-height: 500px;">
-                    <ul id="task-list" class="space-y-3">
-                        <!-- Tasks will be injected here via JavaScript -->
-                        <div class="text-center text-slate-400 py-10 text-sm">
-                            아직 등록된 할 일이 없습니다.<br>오늘의 공부 계획을 세워보세요!
-                        </div>
-                    </ul>
-                </div>
-            </section>
         </div>
+
+        <div class="dday-card">
+            <span class="dday-label">D - Day</span>
+            <div class="dday-number" id="d-day-display">D—??</div>
+            <button class="dday-btn" onclick="openDDayModal()">날짜 설정 →</button>
+        </div>
+    </header>
+
+    <div class="divider"></div>
+
+    <!-- PROGRESS -->
+    <div class="progress-section">
+        <div class="progress-top">
+            <span class="section-label">오늘의 달성률</span>
+            <span class="progress-pct" id="progress-text">0%</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+        <p class="motivation" id="motivation-message">오늘도 힘차게 시작해볼까요</p>
     </div>
 
-    <!-- D-Day Setup Modal (Hidden by default) -->
-    <div id="dday-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 transform transition-all scale-95 opacity-0" id="dday-modal-content">
-            <div class="flex justify-between items-center mb-5">
-                <h3 class="text-lg font-bold text-slate-800">D-Day 설정</h3>
-                <button onclick="closeDDayModal()" class="text-slate-400 hover:text-slate-600">
-                    <i class="fa-solid fa-xmark text-xl"></i>
-                </button>
-            </div>
-            <div class="mb-5">
-                <label class="block text-sm font-medium text-slate-700 mb-2">시험 날짜를 선택해주세요</label>
-                <input type="date" id="dday-input" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
-            <button onclick="saveDDay()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-bold transition">
-                저장하기
+    <div class="divider"></div>
+
+    <!-- TASK INPUT -->
+    <form id="task-form" class="task-form" onsubmit="handleSubmit(event)">
+        <div class="select-wrap">
+            <button type="button" class="select-btn" id="select-btn">
+                <span class="dot" id="select-dot" style="background:var(--text-dim)"></span>
+                <span id="select-text">과목</span>
+                <i class="fa-solid fa-chevron-down select-chevron" id="select-chevron"></i>
             </button>
+            <div class="select-menu" id="select-menu">
+                <button type="button" class="select-option" data-value="국어" data-color="var(--subject-1)">
+                    <span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--subject-1);flex-shrink:0"></span> 국어
+                </button>
+                <button type="button" class="select-option" data-value="수학" data-color="var(--subject-2)">
+                    <span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--subject-2);flex-shrink:0"></span> 수학
+                </button>
+                <button type="button" class="select-option" data-value="영어" data-color="var(--subject-3)">
+                    <span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--subject-3);flex-shrink:0"></span> 영어
+                </button>
+                <button type="button" class="select-option" data-value="사탐" data-color="var(--subject-4)">
+                    <span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--subject-4);flex-shrink:0"></span> 사탐
+                </button>
+                <button type="button" class="select-option" data-value="과탐" data-color="var(--subject-5)">
+                    <span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--subject-5);flex-shrink:0"></span> 과탐
+                </button>
+                <button type="button" class="select-option" data-value="기타" data-color="var(--subject-6)">
+                    <span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--subject-6);flex-shrink:0"></span> 기타
+                </button>
+            </div>
+            <input type="hidden" id="subject-input">
         </div>
+
+        <input type="text" id="task-input" class="task-input" placeholder="오늘 공부할 내용을 입력하세요" required>
+        <button type="submit" class="add-btn">ADD</button>
+    </form>
+
+    <!-- TASK LIST -->
+    <div class="tasks-label">
+        <span class="section-label">할 일 목록</span>
+        <span class="task-count" id="task-count"></span>
     </div>
+    <ul class="task-list" id="task-list"></ul>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <div class="footer">Tasks reset at 05:00 KST · Data synced via Firebase</div>
+</div>
 
-        // 사용자님의 Firebase 설정 코드로 교체 완료!
-        const firebaseConfig = {
-          apiKey: "AIzaSyA5FJ1rA3BvrQmt-d-xcCesyCLMMELaKbo",
-          authDomain: "dg-yeolpumta.firebaseapp.com",
-          projectId: "dg-yeolpumta",
-          storageBucket: "dg-yeolpumta.firebasestorage.app",
-          messagingSenderId: "575142322137",
-          appId: "1:575142322137:web:0312a6f5640e76404d03c8"
-        };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+<!-- D-DAY MODAL -->
+<div class="modal-overlay" id="dday-modal">
+    <div class="modal-box">
+        <div class="modal-title">
+            D-Day 설정
+            <button class="modal-close" onclick="closeDDayModal()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <label class="modal-label">시험 날짜</label>
+        <input type="date" id="dday-input" class="modal-date-input">
+        <button class="modal-save" onclick="saveDDay()">저장하기</button>
+    </div>
+</div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        let currentUser = null;
+    const firebaseConfig = {
+        apiKey: "AIzaSyA5FJ1rA3BvrQmt-d-xcCesyCLMMELaKbo",
+        authDomain: "dg-yeolpumta.firebaseapp.com",
+        projectId: "dg-yeolpumta",
+        storageBucket: "dg-yeolpumta.firebasestorage.app",
+        messagingSenderId: "575142322137",
+        appId: "1:575142322137:web:0312a6f5640e76404d03c8"
+    };
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        // Init Auth
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    try {
-                        // 기본 환경 토큰으로 로그인 시도
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } catch (tokenError) {
-                        // 사용자 커스텀 프로젝트(config)를 사용하여 토큰 에러가 발생한 경우 익명 로그인으로 폴백
-                        console.warn("커스텀 프로젝트 연동으로 인한 토큰 불일치. 익명 로그인으로 전환합니다.");
-                        await signInAnonymously(auth);
-                    }
-                } else {
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+
+    const initAuth = async () => {
+        try {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                try {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } catch {
                     await signInAnonymously(auth);
                 }
-            } catch (error) {
-                console.error("Auth error:", error);
-            }
-        };
-        initAuth();
-
-        // 플래너 기준일 계산 함수 (자정 12시 기준)
-        function getPlannerDay(date) {
-            const d = new Date(date);
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        }
-
-        // --- State Management ---
-        let tasks = [];
-        let examDate = null;
-        let isSyncing = false;
-        let lastResetDay = getPlannerDay(new Date());
-
-        // Listen for Auth changes
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                loadDataFromFirestore();
             } else {
-                currentUser = null;
+                await signInAnonymously(auth);
             }
-        });
-
-        function getPlannerDocRef() {
-            if (!currentUser) return null;
-            return doc(db, 'artifacts', appId, 'users', currentUser.uid, 'plannerData', 'current');
+        } catch (error) {
+            console.error("Auth error:", error);
         }
+    };
+    initAuth();
 
-        function loadDataFromFirestore() {
-            const docRef = getPlannerDocRef();
-            if (!docRef) return;
+    // ── KST 기준 오전 5시 플래너 기준일 계산 ──────────────────
+    // KST = UTC+9. 오전 5시를 하루의 시작으로 사용.
+    // UTC 기준으로 오전 5시 KST = 전날 UTC 20:00.
+    function getPlannerDay(date) {
+        // KST 시간으로 변환
+        const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+        // KST 시간이 0~4시면 "전날"로 간주 (오전 5시가 기준)
+        if (kst.getUTCHours() < 5) {
+            kst.setUTCDate(kst.getUTCDate() - 1);
+        }
+        const y = kst.getUTCFullYear();
+        const m = String(kst.getUTCMonth() + 1).padStart(2, '0');
+        const d = String(kst.getUTCDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
 
-            onSnapshot(docRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.data();
-                    isSyncing = true;
-                    
-                    // 자정 초기화 로직: 파이어베이스에 저장된 기준일과 현재 기준일 비교
-                    const currentDay = getPlannerDay(new Date());
-                    if (data.lastResetDay && data.lastResetDay !== currentDay) {
-                        // 날짜가 변경되었으므로 할 일 목록 초기화
-                        tasks = [];
-                        lastResetDay = currentDay;
-                        
-                        // 초기화된 상태를 바로 DB에 반영 (무한루프 방지를 위해 isSyncing 조절)
-                        isSyncing = false; 
-                        saveDataToFirestore();
-                        isSyncing = true;
-                    } else {
-                        tasks = data.tasks || [];
-                        if (data.lastResetDay) lastResetDay = data.lastResetDay;
-                    }
-                    
-                    if (data.motto !== undefined) {
-                        document.getElementById('motto-input').value = data.motto;
-                    }
+    // ── State ──────────────────────────────────────────────────
+    let tasks = [];
+    let examDate = null;
+    let isSyncing = false;
+    let lastResetDay = getPlannerDay(new Date());
 
-                    if (data.examDate) {
-                        examDate = new Date(data.examDate);
-                        examDate.setHours(0, 0, 0, 0);
-                        const yyyy = examDate.getFullYear();
-                        const mm = String(examDate.getMonth() + 1).padStart(2, '0');
-                        const dd = String(examDate.getDate()).padStart(2, '0');
-                        document.getElementById('dday-input').value = `${yyyy}-${mm}-${dd}`;
-                    } else {
-                        examDate = null;
-                    }
-                    
-                    renderTasks();
-                    updateProgress();
-                    calculateDDay();
-                    
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
+            loadDataFromFirestore();
+        } else {
+            currentUser = null;
+        }
+    });
+
+    function getPlannerDocRef() {
+        if (!currentUser) return null;
+        return doc(db, 'artifacts', appId, 'users', currentUser.uid, 'plannerData', 'current');
+    }
+
+    function loadDataFromFirestore() {
+        const docRef = getPlannerDocRef();
+        if (!docRef) return;
+
+        onSnapshot(docRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.data();
+                isSyncing = true;
+
+                const currentDay = getPlannerDay(new Date());
+                if (data.lastResetDay && data.lastResetDay !== currentDay) {
+                    // 날짜 변경 → 할 일만 초기화 (모토·시험일 유지)
+                    tasks = [];
+                    lastResetDay = currentDay;
                     isSyncing = false;
+                    saveDataToFirestore();
+                    isSyncing = true;
+                } else {
+                    tasks = data.tasks || [];
+                    if (data.lastResetDay) lastResetDay = data.lastResetDay;
                 }
-            }, (error) => {
-                console.error("Error fetching data:", error);
-            });
-        }
 
-        async function saveDataToFirestore() {
-            if (!currentUser || isSyncing) return;
-            const docRef = getPlannerDocRef();
-            if (!docRef) return;
+                // 모토는 항상 유지
+                if (data.motto !== undefined) {
+                    document.getElementById('motto-input').value = data.motto;
+                }
 
-            const mottoValue = document.getElementById('motto-input').value;
+                // 시험일도 항상 유지
+                if (data.examDate) {
+                    examDate = new Date(data.examDate);
+                    examDate.setHours(0, 0, 0, 0);
+                    const yyyy = examDate.getFullYear();
+                    const mm = String(examDate.getMonth() + 1).padStart(2, '0');
+                    const dd = String(examDate.getDate()).padStart(2, '0');
+                    document.getElementById('dday-input').value = `${yyyy}-${mm}-${dd}`;
+                } else {
+                    examDate = null;
+                }
 
-            const dataToSave = {
-                tasks: tasks,
-                motto: mottoValue,
+                renderAll();
+                isSyncing = false;
+            }
+        }, (error) => {
+            console.error("Firestore error:", error);
+        });
+    }
+
+    async function saveDataToFirestore() {
+        if (!currentUser || isSyncing) return;
+        const docRef = getPlannerDocRef();
+        if (!docRef) return;
+        try {
+            await setDoc(docRef, {
+                tasks,
+                motto: document.getElementById('motto-input').value,
                 examDate: examDate ? examDate.toISOString() : null,
-                lastResetDay: lastResetDay
-            };
-
-            try {
-                await setDoc(docRef, dataToSave);
-            } catch (error) {
-                console.error("Error saving data:", error);
-            }
+                lastResetDay
+            });
+        } catch (e) {
+            console.error("Save error:", e);
         }
+    }
 
-        // Add event listener to motto input to save on blur/change
-        document.getElementById('motto-input').addEventListener('change', saveDataToFirestore);
+    // 1분마다 KST 오전 5시 기준 날짜 변경 체크
+    setInterval(() => {
+        const currentDay = getPlannerDay(new Date());
+        if (lastResetDay !== currentDay) {
+            tasks = [];
+            lastResetDay = currentDay;
+            renderAll();
+            saveDataToFirestore();
+        }
+    }, 60000);
 
-        // 앱을 켜두었을 때 자정(00:00)이 지났는지 1분마다 체크하여 화면 자동 초기화
-        setInterval(() => {
-            const currentDay = getPlannerDay(new Date());
-            if (lastResetDay !== currentDay) {
-                tasks = [];
-                lastResetDay = currentDay;
-                renderTasks();
-                updateProgress();
-                saveDataToFirestore();
-            }
-        }, 60000);
+    // ── Dropdown ───────────────────────────────────────────────
+    const selectBtn = document.getElementById('select-btn');
+    const selectMenu = document.getElementById('select-menu');
+    const selectText = document.getElementById('select-text');
+    const selectDot = document.getElementById('select-dot');
+    const selectChevron = document.getElementById('select-chevron');
 
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
-            updateCurrentDate();
-            renderTasks();
-            initDropdown();
+    selectBtn.addEventListener('click', () => {
+        selectMenu.classList.toggle('open');
+        selectBtn.classList.toggle('open');
+    });
+
+    document.querySelectorAll('.select-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+            const val = opt.dataset.value;
+            const color = opt.dataset.color;
+            document.getElementById('subject-input').value = val;
+            selectText.textContent = val;
+            selectDot.style.background = color;
+            selectDot.style.cssText = `width:7px;height:7px;border-radius:50%;flex-shrink:0;background:${color}`;
+            selectMenu.classList.remove('open');
+            selectBtn.classList.remove('open');
         });
+    });
 
-        // --- Custom Dropdown Logic ---
-        function initDropdown() {
-            const dropdownBtn = document.getElementById('subject-dropdown-btn');
-            const dropdownMenu = document.getElementById('subject-dropdown-menu');
-            const dropdownText = document.getElementById('subject-dropdown-text');
-            const subjectInput = document.getElementById('subject-input');
-
-            dropdownBtn.addEventListener('click', () => {
-                dropdownMenu.classList.toggle('hidden');
-                dropdownMenu.classList.toggle('flex');
-            });
-
-            document.querySelectorAll('.subject-option').forEach(option => {
-                option.addEventListener('click', (e) => {
-                    const value = e.currentTarget.dataset.value;
-                    subjectInput.value = value;
-                    
-                    dropdownText.innerHTML = `<div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full ${getSubjectDotColor(value)}"></span>${value}</div>`;
-                    dropdownText.className = getSubjectTextColor(value);
-                    
-                    dropdownMenu.classList.add('hidden');
-                    dropdownMenu.classList.remove('flex');
-                });
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                    dropdownMenu.classList.add('hidden');
-                    dropdownMenu.classList.remove('flex');
-                }
-            });
+    document.addEventListener('click', (e) => {
+        if (!selectBtn.contains(e.target) && !selectMenu.contains(e.target)) {
+            selectMenu.classList.remove('open');
+            selectBtn.classList.remove('open');
         }
+    });
 
-        function getSubjectDotColor(subject) {
-            switch(subject) {
-                case '국어': return 'bg-yellow-400';
-                case '수학': return 'bg-green-400';
-                case '영어': return 'bg-orange-400';
-                case '사탐': return 'bg-purple-400';
-                case '과탐': return 'bg-blue-400';
-                case '기타': return 'bg-slate-400';
-                default: return 'bg-slate-400';
-            }
-        }
+    // ── Date display ───────────────────────────────────────────
+    function updateCurrentDate() {
+        const now = new Date();
+        const opts = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+        document.getElementById('current-date').textContent =
+            now.toLocaleDateString('ko-KR', opts).toUpperCase();
+    }
 
-        function getSubjectTextColor(subject) {
-            switch(subject) {
-                case '국어': return 'text-yellow-700 font-medium';
-                case '수학': return 'text-green-700 font-medium';
-                case '영어': return 'text-orange-700 font-medium';
-                case '사탐': return 'text-purple-700 font-medium';
-                case '과탐': return 'text-blue-700 font-medium';
-                case '기타': return 'text-slate-700 font-medium';
-                default: return 'text-slate-500';
-            }
-        }
-
-        function getSubjectBgColor(subject) {
-            switch(subject) {
-                case '국어': return 'bg-yellow-100 text-yellow-700';
-                case '수학': return 'bg-green-100 text-green-700';
-                case '영어': return 'bg-orange-100 text-orange-700';
-                case '사탐': return 'bg-purple-100 text-purple-700';
-                case '과탐': return 'bg-blue-100 text-blue-700';
-                case '기타': return 'bg-slate-100 text-slate-700';
-                default: return 'bg-slate-100 text-slate-600';
-            }
-        }
-
-        // --- Date & Time ---
-        function updateCurrentDate() {
-            const now = new Date();
-            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-            document.getElementById('current-date').textContent = now.toLocaleDateString('ko-KR', options);
-        }
-
-        // --- D-Day Logic ---
-        window.openDDayModal = function openDDayModal() {
-            const modal = document.getElementById('dday-modal');
-            const content = document.getElementById('dday-modal-content');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            // Small delay for animation
-            setTimeout(() => {
-                content.classList.remove('scale-95', 'opacity-0');
-                content.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        window.closeDDayModal = function closeDDayModal() {
-            const modal = document.getElementById('dday-modal');
-            const content = document.getElementById('dday-modal-content');
-            content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 200);
-        }
-        window.saveDDay = function saveDDay() {
-            const inputDate = document.getElementById('dday-input').value;
-            if (inputDate) {
-                examDate = new Date(inputDate);
-                examDate.setHours(0, 0, 0, 0); // Normalize to start of day
-                calculateDDay();
-                saveDataToFirestore();
-                closeDDayModal();
-            }
-        }
-
-        function calculateDDay() {
-            if (!examDate) return;
-            
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            
-            const diffTime = examDate - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            const displayEl = document.getElementById('d-day-display');
-            if (diffDays > 0) {
-                displayEl.textContent = `D-${diffDays}`;
-                displayEl.className = "text-xl font-bold text-indigo-700";
-            } else if (diffDays === 0) {
-                displayEl.textContent = `D-Day`;
-                displayEl.className = "text-xl font-bold text-red-500 animate-pulse";
-            } else {
-                displayEl.textContent = `D+${Math.abs(diffDays)}`;
-                displayEl.className = "text-xl font-bold text-slate-500";
-            }
-        }
-
-        // --- Task Management ---
-        const taskForm = document.getElementById('task-form');
-        taskForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const subjectEl = document.getElementById('subject-input');
-            const taskEl = document.getElementById('task-input');
-            const dropdownBtn = document.getElementById('subject-dropdown-btn');
-            
-            // Validate custom dropdown
-            if (subjectEl.value === '') {
-                dropdownBtn.classList.add('ring-2', 'ring-red-400');
-                setTimeout(() => dropdownBtn.classList.remove('ring-2', 'ring-red-400'), 1500);
-                return;
-            }
-
-            if (taskEl.value.trim() === '') return;
-
-            const newTask = {
-                id: Date.now().toString(),
-                subject: subjectEl.value,
-                text: taskEl.value.trim(),
-                completed: false
-            };
-
-            tasks.push(newTask);
-            
-            // Reset form
-            subjectEl.value = ''; 
-            const dropdownText = document.getElementById('subject-dropdown-text');
-            dropdownText.innerHTML = '과목 선택';
-            dropdownText.className = 'text-slate-500 truncate';
-
-            taskEl.value = '';
-            taskEl.focus();
-            
-            renderTasks();
-            updateProgress();
+    // ── D-Day ─────────────────────────────────────────────────
+    window.openDDayModal = () => {
+        document.getElementById('dday-modal').classList.add('open');
+    };
+    window.closeDDayModal = () => {
+        document.getElementById('dday-modal').classList.remove('open');
+    };
+    window.saveDDay = () => {
+        const v = document.getElementById('dday-input').value;
+        if (v) {
+            examDate = new Date(v);
+            examDate.setHours(0, 0, 0, 0);
+            calculateDDay();
             saveDataToFirestore();
+            closeDDayModal();
+        }
+    };
+
+    function calculateDDay() {
+        if (!examDate) return;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+        const el = document.getElementById('d-day-display');
+        el.className = 'dday-number';
+        if (diff > 0) { el.textContent = `D-${diff}`; }
+        else if (diff === 0) { el.textContent = `D-Day`; el.classList.add('today'); }
+        else { el.textContent = `D+${Math.abs(diff)}`; el.classList.add('past'); }
+    }
+
+    // ── Tasks ─────────────────────────────────────────────────
+    window.handleSubmit = (e) => {
+        e.preventDefault();
+        const subj = document.getElementById('subject-input').value;
+        const text = document.getElementById('task-input').value.trim();
+
+        if (!subj) {
+            selectBtn.style.borderColor = '#e87a7a';
+            setTimeout(() => selectBtn.style.borderColor = '', 1500);
+            return;
+        }
+        if (!text) return;
+
+        tasks.push({ id: Date.now().toString(), subject: subj, text, completed: false });
+
+        // reset form
+        document.getElementById('subject-input').value = '';
+        selectText.textContent = '과목';
+        selectDot.style.cssText = 'width:7px;height:7px;border-radius:50%;flex-shrink:0;background:var(--text-dim)';
+        document.getElementById('task-input').value = '';
+        document.getElementById('task-input').focus();
+
+        renderAll();
+        saveDataToFirestore();
+    };
+
+    window.toggleTask = (id) => {
+        tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+        renderAll();
+        saveDataToFirestore();
+    };
+
+    window.deleteTask = (id) => {
+        tasks = tasks.filter(t => t.id !== id);
+        renderAll();
+        saveDataToFirestore();
+    };
+
+    function esc(s) {
+        return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+                .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    }
+
+    function renderAll() {
+        renderTasks();
+        updateProgress();
+        calculateDDay();
+    }
+
+    function renderTasks() {
+        const ul = document.getElementById('task-list');
+        const countEl = document.getElementById('task-count');
+        const done = tasks.filter(t => t.completed).length;
+
+        if (tasks.length === 0) {
+            countEl.textContent = '';
+            ul.innerHTML = `
+                <div class="task-empty">
+                    <div class="task-empty-icon"><i class="fa-regular fa-clipboard"></i></div>
+                    <p>아직 등록된 할 일이 없습니다<br>오늘의 공부 계획을 세워보세요</p>
+                </div>`;
+            return;
+        }
+
+        countEl.textContent = `${done} / ${tasks.length}`;
+        ul.innerHTML = '';
+        tasks.forEach(t => {
+            const li = document.createElement('li');
+            li.className = `task-item${t.completed ? ' done' : ''}`;
+            li.dataset.subject = t.subject;
+            li.innerHTML = `
+                <label class="task-cb-label">
+                    <input type="checkbox" class="task-cb" ${t.completed ? 'checked' : ''}
+                        onchange="toggleTask('${t.id}')">
+                    <div class="task-cb-custom"><i class="fa-solid fa-check"></i></div>
+                </label>
+                <div class="task-body">
+                    <span class="task-badge" data-subject="${esc(t.subject)}">${esc(t.subject)}</span>
+                    <span class="task-text">${esc(t.text)}</span>
+                </div>
+                <button class="task-del" onclick="deleteTask('${t.id}')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>`;
+            ul.appendChild(li);
         });
+    }
 
-        window.toggleTask = function toggleTask(id) {
-            tasks = tasks.map(task => 
-                task.id === id ? { ...task, completed: !task.completed } : task
-            );
-            renderTasks();
-            updateProgress();
-            saveDataToFirestore();
-        }
+    function updateProgress() {
+        const total = tasks.length;
+        const done = tasks.filter(t => t.completed).length;
+        const pct = total === 0 ? 0 : Math.round((done / total) * 100);
 
-        window.deleteTask = function deleteTask(id) {
-            tasks = tasks.filter(task => task.id !== id);
-            renderTasks();
-            updateProgress();
-            saveDataToFirestore();
-        }
+        document.getElementById('progress-bar').style.width = `${pct}%`;
+        document.getElementById('progress-text').textContent = `${pct}%`;
 
-        function renderTasks() {
-            const taskList = document.getElementById('task-list');
-            
-            if (tasks.length === 0) {
-                taskList.innerHTML = `
-                    <div class="text-center text-slate-400 py-10 text-sm">
-                        <i class="fa-solid fa-clipboard-list text-3xl mb-3 opacity-50"></i><br>
-                        아직 등록된 할 일이 없습니다.<br>오늘의 공부 계획을 세워보세요!
-                    </div>`;
-                return;
-            }
+        const msgs = [
+            [0, 0, "오늘도 힘차게 시작해볼까요"],
+            [0, 0, "첫 번째 목표를 달성해 보세요"],
+            [1, 49, "순조로운 출발입니다, 계속 달려봐요"],
+            [50, 99, "절반 이상 달성, 고지가 눈앞에"],
+            [100, 100, "완벽합니다, 오늘의 목표 달성 🏆"],
+        ];
+        let msg = "오늘도 힘차게 시작해볼까요";
+        if (total === 0) msg = msgs[0][2];
+        else if (pct === 0) msg = msgs[1][2];
+        else if (pct < 50) msg = msgs[2][2];
+        else if (pct < 100) msg = msgs[3][2];
+        else msg = msgs[4][2];
 
-            taskList.innerHTML = '';
-            tasks.forEach(task => {
-                const li = document.createElement('li');
-                li.className = `group flex items-center justify-between p-3 sm:p-4 rounded-xl border transition-all ${task.completed ? 'bg-slate-50 border-transparent opacity-75' : 'bg-white border-slate-200 hover:border-indigo-300 shadow-sm'}`;
-                
-                const subjectBadgeColor = getSubjectBgColor(task.subject);
+        document.getElementById('motivation-message').textContent = msg;
+    }
 
-                li.innerHTML = `
-                    <label class="flex items-center gap-3 cursor-pointer flex-1 overflow-hidden">
-                        <div class="relative flex items-center justify-center">
-                            <input type="checkbox" class="peer appearance-none w-5 h-5 border-2 border-slate-300 rounded-full checked:bg-indigo-500 checked:border-indigo-500 transition cursor-pointer" 
-                                ${task.completed ? 'checked' : ''} 
-                                onchange="toggleTask('${task.id}')">
-                            <i class="fa-solid fa-check absolute text-white text-xs opacity-0 peer-checked:opacity-100 pointer-events-none transition"></i>
-                        </div>
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 flex-1 min-w-0 transition-all ${task.completed ? 'line-through text-slate-400' : 'text-slate-700'}">
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-md whitespace-nowrap w-max ${subjectBadgeColor} ${task.completed ? 'opacity-50 grayscale' : ''}">${escapeHtml(task.subject)}</span>
-                            <span class="text-sm font-medium truncate mt-0.5 sm:mt-0">${escapeHtml(task.text)}</span>
-                        </div>
-                    </label>
-                    <button onclick="deleteTask('${task.id}')" class="text-slate-300 hover:text-red-500 p-2 opacity-0 group-hover:opacity-100 transition focus:opacity-100 ml-2">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                `;
-                taskList.appendChild(li);
-            });
-        }
+    // ── Motto save ─────────────────────────────────────────────
+    document.getElementById('motto-input').addEventListener('change', saveDataToFirestore);
 
-        function updateProgress() {
-            const total = tasks.length;
-            const completed = tasks.filter(t => t.completed).length;
-            const percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
-            
-            document.getElementById('progress-bar').style.width = `${percentage}%`;
-            
-            // Animate number counting
-            const progressText = document.getElementById('progress-text');
-            progressText.textContent = `${percentage}%`;
-
-            // Update motivation message based on progress
-            const msgEl = document.getElementById('motivation-message');
-            if (total === 0) {
-                msgEl.textContent = "오늘도 힘차게 시작해볼까요? 파이팅! 🔥";
-            } else if (percentage === 0) {
-                msgEl.textContent = "첫 번째 목표를 달성해 보세요! 할 수 있어요 💪";
-            } else if (percentage < 50) {
-                msgEl.textContent = "순조로운 출발입니다! 계속 달려봐요 🏃‍♂️";
-            } else if (percentage < 100) {
-                msgEl.textContent = "절반 이상 달성! 고지가 눈앞에 보입니다 ✨";
-            } else {
-                msgEl.textContent = "완벽해요! 오늘의 목표를 모두 달성했습니다 🏆";
-                confettiEffect();
-            }
-        }
-
-        // Simple helper to prevent XSS
-        function escapeHtml(unsafe) {
-            return unsafe
-                 .replace(/&/g, "&amp;")
-                 .replace(/</g, "&lt;")
-                 .replace(/>/g, "&gt;")
-                 .replace(/"/g, "&quot;")
-                 .replace(/'/g, "&#039;");
-        }
-
-        // --- Fun Extra: Confetti for 100% ---
-        function confettiEffect() {
-            // Simple falling shapes logic if we wanted to build it from scratch,
-            // but for simplicity without external heavy libs, we just change the background color briefly
-            const progressSection = document.getElementById('progress-bar').parentElement.parentElement;
-            progressSection.classList.add('ring-4', 'ring-indigo-300', 'transition-all');
-            setTimeout(() => {
-                progressSection.classList.remove('ring-4', 'ring-indigo-300');
-            }, 1500);
-        }
-
-    </script>
+    // ── Init ───────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCurrentDate();
+        renderAll();
+    });
+</script>
 </body>
 </html>
