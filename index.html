@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=DM+Serif+Display&family=Syne:wght@400;500;600;700&family=Martian+Mono:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -86,10 +86,11 @@
         }
 
         .current-date {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Syne', sans-serif;
             font-size: 11px;
+            font-weight: 500;
             color: var(--text-muted);
-            letter-spacing: 0.08em;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
             margin-bottom: 20px;
         }
@@ -134,10 +135,11 @@
             flex-shrink: 0;
         }
         .dday-label {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Syne', sans-serif;
             font-size: 10px;
+            font-weight: 600;
             color: var(--text-muted);
-            letter-spacing: 0.1em;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
         }
         .dday-number {
@@ -155,9 +157,10 @@
             background: var(--surface);
             border: 1px solid var(--border);
             color: var(--text-muted);
-            font-size: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: 0.05em;
+            font-size: 11px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.08em;
             padding: 5px 12px;
             border-radius: 6px;
             cursor: pointer;
@@ -182,15 +185,17 @@
             margin-bottom: 10px;
         }
         .section-label {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Syne', sans-serif;
             font-size: 10px;
-            letter-spacing: 0.12em;
+            font-weight: 600;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
             color: var(--text-muted);
         }
         .progress-pct {
-            font-family: 'DM Serif Display', serif;
-            font-size: 24px;
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
             color: var(--gold);
         }
 
@@ -231,8 +236,10 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
             color: var(--text-muted);
             cursor: pointer;
             display: flex;
@@ -268,8 +275,10 @@
             gap: 8px;
             padding: 8px 10px;
             border-radius: 7px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
             color: var(--text);
             cursor: pointer;
             border: none;
@@ -305,10 +314,10 @@
             color: var(--bg);
             border: none;
             border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.06em;
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
             cursor: pointer;
             transition: opacity 0.2s, transform 0.1s;
             flex-shrink: 0;
@@ -324,8 +333,9 @@
             margin-bottom: 12px;
         }
         .task-count {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
+            font-family: 'Martian Mono', monospace;
+            font-size: 11px;
+            font-weight: 300;
             color: var(--text-dim);
         }
 
@@ -421,14 +431,14 @@
             min-width: 0;
         }
         .task-badge {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Syne', sans-serif;
             font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0.06em;
+            font-weight: 700;
+            letter-spacing: 0.08em;
             padding: 3px 8px;
             border-radius: 4px;
             flex-shrink: 0;
-            opacity: 0.85;
+            opacity: 0.9;
         }
         .task-badge[data-subject="국어"] { background: rgba(232,201,122,0.15); color: var(--subject-1); }
         .task-badge[data-subject="수학"] { background: rgba(122,232,160,0.15); color: var(--subject-2); }
@@ -510,9 +520,10 @@
         .modal-close:hover { color: var(--text); }
 
         .modal-label {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Syne', sans-serif;
             font-size: 10px;
-            letter-spacing: 0.1em;
+            font-weight: 600;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
             color: var(--text-muted);
             margin-bottom: 8px;
@@ -524,8 +535,9 @@
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Martian Mono', monospace;
             font-size: 13px;
+            font-weight: 400;
             color: var(--text);
             outline: none;
             margin-bottom: 20px;
@@ -541,10 +553,10 @@
             color: var(--bg);
             border: none;
             border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Syne', sans-serif;
             font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 0.08em;
+            font-weight: 700;
+            letter-spacing: 0.1em;
             cursor: pointer;
             transition: opacity 0.2s;
         }
@@ -554,10 +566,11 @@
         .footer {
             margin-top: 40px;
             text-align: center;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Martian Mono', monospace;
             font-size: 10px;
+            font-weight: 300;
             color: var(--text-dim);
-            letter-spacing: 0.06em;
+            letter-spacing: 0.04em;
         }
 
         /* Responsive */
